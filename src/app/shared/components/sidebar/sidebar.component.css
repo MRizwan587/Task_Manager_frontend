@@ -1,0 +1,9 @@
+.icon{
+    padding-right: 10px;
+}
+mat-nav-list{
+    width: 13vw;
+    
+    padding-top: 30px;  
+    overflow: hidden; 
+}

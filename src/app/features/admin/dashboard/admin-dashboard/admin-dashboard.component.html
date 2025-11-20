@@ -1,0 +1,284 @@
+
+<div class="dashboard-container">
+  <!-- loader -->
+  <div *ngIf="loading" class="loading-overlay">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>Please wait, Loading dashboard ...</p>
+  </div>
+
+  
+  <div *ngIf="!loading" class="dashboard-content">
+    
+    <div class="dashboard-header">
+      <h1>Dashboard</h1>
+      <p class="subtitle">Overview of your tasks and progress</p>
+    </div>
+
+    
+    <div class="stats-grid">
+      
+      <mat-card class="stat-card total">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon-wrapper total">
+              <mat-icon>assignment</mat-icon>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">Total Tasks</p>
+              <p class="stat-value">{{ totalTasks }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      
+      <mat-card class="stat-card pending">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon-wrapper pending">
+              <mat-icon>pending_actions</mat-icon>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">Pending</p>
+              <p class="stat-value">{{ pendingTasks }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      
+      <mat-card class="stat-card in-progress">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon-wrapper in-progress">
+              <mat-icon>sync</mat-icon>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">In Progress</p>
+              <p class="stat-value">{{ inProgressTasks }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      
+      <mat-card class="stat-card completed">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon-wrapper completed">
+              <mat-icon>check_circle</mat-icon>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">Completed</p>
+              <p class="stat-value">{{ completedTasks }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    
+    <mat-card class="progress-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>trending_up</mat-icon>
+          Overall Progress
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="progress-info">
+          <div class="progress-text">
+            <span class="progress-label">Completion Rate</span>
+            <span class="progress-percentage"
+              >{{ getCompletionPercentage() }}%</span
+            >
+          </div>
+            <mat-progress-bar
+              mode="determinate"
+              [value]="getCompletionPercentage()"
+              [color]="
+                getCompletionPercentage() >= 70
+                  ? 'primary'
+                  : getCompletionPercentage() >= 40
+                  ? 'accent'
+                  : 'warn'
+              "
+            ></mat-progress-bar>
+          <div class="progress-stats">
+            <span
+              >{{ completedTasks }} of {{ totalTasks }} tasks completed</span
+            >
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Priority Breakdown -->
+    <div class="content-grid">
+      <!-- Priority Breakdown Card -->
+      <mat-card class="priority-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>priority_high</mat-icon>
+            Priority Breakdown
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="priority-list">
+            <div class="priority-item">
+              <div class="priority-info">
+                <mat-chip [color]="'warn'" selected>
+                  <mat-icon>flag</mat-icon>
+                  High Priority
+                </mat-chip>
+                <span class="priority-count">{{ highPriorityTasks }}</span>
+              </div>
+              <mat-progress-bar
+                mode="determinate"
+                [value]="
+                  totalTasks > 0 ? (highPriorityTasks / totalTasks) * 100 : 0
+                "
+                color="warn"
+                class="priority-bar"
+              ></mat-progress-bar>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="priority-item">
+              <div class="priority-info">
+                <mat-chip [color]="'accent'" selected>
+                  <mat-icon>flag</mat-icon>
+                  Medium Priority
+                </mat-chip>
+                <span class="priority-count">{{ mediumPriorityTasks }}</span>
+              </div>
+              <mat-progress-bar
+                mode="determinate"
+                [value]="
+                  totalTasks > 0 ? (mediumPriorityTasks / totalTasks) * 100 : 0
+                "
+                color="accent"
+                class="priority-bar"
+              ></mat-progress-bar>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="priority-item">
+              <div class="priority-info">
+                <mat-chip [color]="'primary'" selected>
+                  <mat-icon>flag</mat-icon>
+                  Low Priority
+                </mat-chip>
+                <span class="priority-count">{{ lowPriorityTasks }}</span>
+              </div>
+              <mat-progress-bar
+                mode="determinate"
+                [value]="
+                  totalTasks > 0 ? (lowPriorityTasks / totalTasks) * 100 : 0
+                "
+                color="primary"
+                class="priority-bar"
+              ></mat-progress-bar>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Upcoming Tasks Card -->
+      <mat-card class="tasks-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>event</mat-icon>
+            Upcoming Tasks
+            <mat-chip *ngIf="upcomingTasks.length > 0" [color]="'warn'">
+              {{ upcomingTasks.length }}
+            </mat-chip>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="upcomingTasks.length === 0" class="empty-state">
+            <mat-icon>event_available</mat-icon>
+            <p>No upcoming tasks in the next 7 days</p>
+          </div>
+          <mat-list *ngIf="upcomingTasks.length > 0">
+            <mat-list-item
+              *ngFor="let task of upcomingTasks"
+              (click)="navigateToTask(task)"
+              class="task-list-item"
+            >
+              <mat-icon matListItemIcon>task</mat-icon>
+              <div matListItemTitle class="task-title">{{ task.title }}</div>
+              <div matListItemLine class="task-meta">
+                <mat-chip [color]="getPriorityColor(task.priority)" selected>
+                  {{ task.priority | titlecase }}
+                </mat-chip>
+                <span class="due-date">
+                  <mat-icon class="date-icon">schedule</mat-icon>
+                  {{ formatDate(task.dueDate) }}
+                </span>
+              </div>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Recent Tasks Card -->
+    <mat-card class="recent-tasks-card">
+      <mat-card-header>
+        <div class="card-header-content">
+          <mat-card-title>
+            <mat-icon>history</mat-icon>
+            Recent Tasks
+          </mat-card-title>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="navigateToTasks()"
+            class="view-all-btn"
+          >
+            <mat-icon>list</mat-icon>
+            View All Tasks
+          </button>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="recentTasks.length === 0" class="empty-state">
+          <mat-icon>inbox</mat-icon>
+          <p>No recent tasks</p>
+        </div>
+        <mat-list *ngIf="recentTasks.length > 0">
+          <mat-list-item
+            *ngFor="let task of recentTasks"
+            (click)="navigateToTask(task)"
+            class="task-list-item recent"
+          >
+            <mat-icon matListItemIcon class="task-icon">
+              {{
+                task.status === "completed"
+                  ? "check_circle"
+                  : task.status === "in-progress"
+                  ? "sync"
+                  : "pending"
+              }}
+            </mat-icon>
+            <div matListItemTitle class="task-title">{{ task.title }}</div>
+            <div matListItemLine class="task-meta">
+              <mat-chip [color]="getStatusColor(task.status)" selected>
+                {{ task.status | titlecase }}
+              </mat-chip>
+              <mat-chip [color]="getPriorityColor(task.priority)" selected>
+                {{ task.priority | titlecase }}
+              </mat-chip>
+              <span class="task-date" *ngIf="task.updatedAt">
+                Updated {{ formatDate(task.updatedAt) }}
+              </span>
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

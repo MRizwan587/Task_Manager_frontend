@@ -1,0 +1,31 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <!-- Left side -->
+
+     <div> 
+    <mat-icon color="warn">api</mat-icon>
+    <span class="ml-2">Task Manager</span>
+      </div>
+    <!-- Spacer -->
+    <span class="spacer"></span>
+      <div> 
+    <!-- Right side: Account Menu -->
+     <div class="userinfo"> 
+     <span class="username">{{ userName }}</span>
+     <span class="role">{{userRole}}</span>
+      </div>
+    <button mat-icon-button [matMenuTriggerFor]="accountMenu">
+      
+      <mat-icon color="warn">account_circle</mat-icon>
+      
+    </button>
+    
+    <mat-menu #accountMenu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

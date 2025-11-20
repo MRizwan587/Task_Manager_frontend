@@ -1,0 +1,27 @@
+/* .spacer{
+    display: flex;
+    flex: auto;
+} */
+
+mat-toolbar-row{
+display: flex;
+justify-content: space-between;
+}
+div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.userinfo{
+    display: flex;
+    flex-direction: column;
+  
+}
+
+.role{
+    font-size: 12px;
+    font-weight: 100;
+    font-style: italic;
+    color: rgb(255, 255, 161);
+    line-height: 0.6rem;
+}
